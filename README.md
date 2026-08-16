@@ -23,11 +23,11 @@ Three axes were swept one at a time, with all other parameters held at the share
 
 **Shared anchor:** crystal rotation 8 rpm, crucible rotation −3 rpm, hot wall temperature 1745 K.
 
-| Sweep | Parameter range | Cases | Zenodo DOI |
-|---|---|---|---|
-| Crystal rotation | 4–20 rpm | 11 | 10.5281/zenodo.21955299 |
-| Hot wall temperature | 1730–1785 K | 10 | 10.5281/zenodo.21955315 |
-| Crucible rotation | −1 to −10 rpm | 12 | 10.5281/zenodo.21955323 |
+| Sweep | Parameter range | Cases |
+|---|---|---|
+| Crystal rotation | 4–20 rpm | 11 |
+| Hot wall temperature | 1730–1785 K | 10 |
+| Crucible rotation | −1 to −10 rpm | 12 |
 
 33 cases in total. The anchor case (crystal 8 rpm, crucible −3 rpm, 1745 K) appears in all three sweep repos and is bit-identical across them.
 
@@ -66,7 +66,7 @@ The temperature sweep folder is split into `steady/` and `transient/` subfolders
 
 This data is intended as training and validation input for surrogate models and PINNs. The fields are on a consistent mesh across all 33 cases, which makes them directly usable as snapshot matrices for POD-based surrogates or as reference fields for PINN residual evaluation.
 
-If you use this dataset in your work, please cite the Zenodo records linked above and the Huang et al. (2025) paper that the simulation setup is based on.
+If you use this dataset in your work, please cite the Huang et al. (2025) paper that the simulation setup is based on.
 
 ---
 
