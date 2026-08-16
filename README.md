@@ -53,8 +53,6 @@ Each sweep has its own subfolder containing the certified CSV files and a dedica
 ```
 CZ_Crystal_Sweep/
 CZ_Study_TempChange/
-    steady/
-    transient/
 CZ_study_Crucible_Sweep/
 ```
 
