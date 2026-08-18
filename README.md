@@ -1,13 +1,13 @@
 # Czochralski Silicon Melt — CFD Parameter Sweep Dataset
 
 CFD data generation, case setup, mesh independence study, and certification: Bertwin Kurisinkal Shine, TU Chemnitz, 2025–2026.
-Produced as reference data for the Quasi / SIMD physics-informed ML project (Aditya Seshaditya, Berlin).
+Produced as reference data for the Quasi (Aditya Seshaditya, Berlin).
 
 ---
 
 ## Overview
 
-This repository collects the raw certified CFD reference data from three independent parameter sweeps of a Czochralski (CZ) silicon melt. The dataset was produced to serve as high-fidelity ground-truth input for surrogate models and physics-informed neural networks (PINNs) being developed under the Quasi / SIMD project.
+This repository collects the raw certified CFD reference data from three independent parameter sweeps of a Czochralski (CZ) silicon melt. The dataset was produced to serve as high-fidelity ground-truth input for surrogate models and physics-informed neural networks (PINNs) being developed under the Quasi project.
 
 The simulation geometry and boundary conditions are based on:
 
