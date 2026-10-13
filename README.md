@@ -74,3 +74,4 @@ If you use this dataset in your work, please cite the Huang et al. (2025) paper 
 - The physics model is laminar throughout the steady sweep range. The Reynolds number for the melt convection in these cases is well below the transition threshold for this geometry.
 - The dataset covers one geometric configuration (the Huang et al. baseline geometry). It does not cover variations in crucible geometry, melt height, or material properties.
 - The `certify_case.py` scripts read the swept parameter from the filename. Renaming case files without updating the filename convention will cause the certification checks to fail or produce incorrect results.
+Where the anchor rotation is held fixed, it was entered as 0.838 rad/s for the crystal (8.0023 rpm) and −0.3140 rad/s for the crucible (−2.9985 rpm), 0.03% and 0.05% from the nominal values. All swept values are exact.
