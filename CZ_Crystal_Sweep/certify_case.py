@@ -1,20 +1,11 @@
 #!/usr/bin/env python3
 """
-certify_case.py
-===============
+Check CZ crystal-rotation cases against their boundary conditions.
 
-Checks one exported CZ crystal-rotation case against the boundary conditions it
-should have been run with, plus the physical sanity tests.
-
-The crystal rotation is read from the filename and every boundary condition is
-re-derived from it, so a case whose setup does not match its label fails here
-rather than entering the dataset unnoticed.
-
-On this axis the crystal is swept and the crucible is held fixed, so the inner
-end of the free-surface swirl ramp is the part that has to follow the swept
-parameter. That ramp is fitted as well as compared point by point, because a
-ramp left at a neighbouring case's value still looks smooth and physical on its
-own -- it only shows up against the rotation the case is labelled with.
+The crystal rpm is read from the file name and the boundary conditions are
+worked out from it. The free-surface swirl ramp is also fitted back to its
+inner end, because a ramp left at a neighbouring case's rpm still looks
+physical when compared point by point.
 
 Usage:
     python certify_case.py steady/CZ_crystal_08rpm_steady.csv
@@ -22,7 +13,7 @@ Usage:
 
 Expected schema: r, z, u_r, u_z, u_swirl, p, T   (8181 rows)
 
-Author: Bertwin Kurisinkal Shine
+Bertwin Kurisinkal Shine, TU Chemnitz. Written with help from an AI assistant.
 """
 
 import sys
@@ -35,7 +26,7 @@ import pandas as pd
 R_CRU   = 0.30        # crucible radius (m)
 R_CRY   = 0.18        # crystal radius (m)
 Z_TOP   = 0.15        # melt height (m)
-OM_CRU  = -0.3140     # crucible rotation (rad/s) -- fixed in this sweep
+OM_CRU  = -0.3140     # crucible rotation (rad/s), fixed in this sweep
 T_CRY   = 1685.0      # crystal face temperature (K)
 T_HOT   = 1745.0      # crucible wall temperature (K)
 T_BOT_0 = 1700.0      # crucible bottom temperature at the axis (K)
@@ -82,17 +73,15 @@ def certify(path):
     axis = d[d.r < 1e-9]
 
     # --- swept boundary: the crystal face ----------------------------------
-    # Node-based export interpolates the wall value, so this is judged relative
-    # to the crystal edge speed rather than on an absolute tolerance.
+    # node export interpolates wall values, so use a relative tolerance
     ci = crys.r < R_CRY - 1e-6
     e = np.abs(crys.u_swirl - om * crys.r)[ci].max()
     add("crystal_face swirl", e / v_inner < 5e-3,
         "max err %.2e  (%.4f %% of edge speed %.6f)" % (e, 100 * e / v_inner, v_inner))
 
     # --- swept boundary: the free-surface ramp -----------------------------
-    # Compared point by point AND fitted back to its inner end. The fit is the
-    # check that matters: a ramp carrying a neighbouring case's inner value is
-    # smooth, monotonic and physical, and only the fitted endpoint exposes it.
+    # point by point, then fitted back to the inner end (the fit catches a
+    # ramp left at the wrong rpm)
     inner = free.r > R_CRY + 1e-6
     ramp = v_inner + ((free.r - R_CRY) / (R_CRU - R_CRY)) * (v_outer - v_inner)
     e = np.abs(free.u_swirl - ramp)[inner].max()
@@ -127,9 +116,7 @@ def certify(path):
     add("T within bounds", ok, "%.2f - %.2f K" % (d["T"].min(), d["T"].max()))
 
     # --- physical sanity ----------------------------------------------------
-    # On the symmetry axis the radial velocity must vanish. This is a
-    # consequence of axisymmetry, not a numerical tolerance, and it also
-    # catches a u_r / u_z column transposition at export time.
+    # u_r must be zero on the axis; also catches swapped u_r / u_z columns
     ratio = 100 * np.abs(axis.u_r).max() / np.abs(d.u_r).max()
     add("axis symmetry (u_r -> 0)", ratio < TOL_AXIS,
         "%.3f %% of field max" % ratio)
