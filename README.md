@@ -1,57 +1,61 @@
-# Czochralski Silicon Melt — CFD Parameter Sweep Dataset
+# Czochralski silicon melt: CFD parameter sweep dataset
 
-CFD data generation, case setup, mesh independence study and certification: Bertwin Kurisinkal Shine, TU Chemnitz, 2025–2026.
-Produced as reference data for the Quasi project (Aditya Seshaditya, Berlin).
+33 steady CFD cases of a Czochralski (CZ) silicon melt from three parameter
+sweeps, collected in one place. I made them as reference data for surrogate
+models and physics-informed neural networks (PINNs) in the Quasi project
+(Aditya Seshaditya, Berlin).
 
----
+The POD + RBF surrogate built on this data is in
+[CZ_Surrogate_App](https://github.com/bertwinshine/CZ_Surrogate_App).
 
-## Overview
+Case setup, CFD runs, mesh study and certification: Bertwin Kurisinkal Shine,
+TU Chemnitz, 2025 to 2026.
 
-This repository collects the certified CFD reference data from three parameter sweeps of a Czochralski (CZ) silicon melt in one place. The data is meant as ground-truth input for surrogate models and physics-informed neural networks (PINNs) developed in the Quasi project. The POD + RBF surrogate built on it is in [CZ_Surrogate_App](https://github.com/bertwinshine/CZ_Surrogate_App).
+## Setup
 
-The simulation geometry and boundary conditions are based on:
+Geometry and boundary conditions follow:
 
 > Huang, W., Cao, S., Liu, R., & Liu, D. (2025). Research on the thermal-fluid coupling in the growth process of Czochralski silicon single crystals based on an improved physics-informed neural network. *AIP Advances*, 15(10), 105202. https://doi.org/10.1063/5.0271778
 
-All simulations were run in ANSYS Fluent 2026 R1 as 2D axisymmetric steady-state cases of the silicon melt (radius 0.30 m, height 0.15 m). Each case was exported as a CSV on the same 8181-node mesh, with the columns `r, z, u_r, u_z, u_swirl, p, T`.
+All cases were run in ANSYS Fluent 2026 R1 as 2D axisymmetric steady cases of
+the melt (radius 0.30 m, height 0.15 m). Every case is exported on the same
+8181-node mesh, in the same node order, with the columns
+`r, z, u_r, u_z, u_swirl, p, T`.
 
----
+## Sweeps
 
-## Parameter Sweeps
+One parameter changes at a time. The other two stay at the shared anchor:
+crystal 8 rpm, crucible −3 rpm, hot wall 1745 K.
 
-Three parameters were swept one at a time. The other two stay at the shared anchor condition.
-
-**Shared anchor:** crystal rotation 8 rpm, crucible rotation −3 rpm, hot wall temperature 1745 K.
-
-| Sweep | Folder | Parameter range | Cases | What the sweep shows |
+| Sweep | Folder | Range | Cases | Main result |
 |---|---|---|---:|---|
-| Crystal rotation | `CZ_Crystal_Sweep/` | 4–20 rpm | 11 | the meridional flow reverses between 6 and 7 rpm |
-| Hot wall temperature | `CZ_TempChange_Sweep/` | 1730–1785 K | 10 | steady flow up to 1785 K |
+| Crystal rotation | `CZ_Crystal_Sweep/` | 4 to 20 rpm | 11 | meridional flow reverses between 6 and 7 rpm |
+| Hot wall temperature | `CZ_TempChange_Sweep/` | 1730 to 1785 K | 10 | flow stays steady up to 1785 K |
 | Crucible rotation | `CZ_Crucible_Sweep/` | −1 to −10 rpm | 12 | velocity minimum near −4 rpm |
 
-33 cases in total. The anchor case (crystal 8 rpm, crucible −3 rpm, 1745 K) appears in all three sweeps. The three copies are the same field; they differ only by export rounding (largest difference 5 × 10⁻⁶).
-
----
+The anchor case appears in all three sweeps. The three copies are the same field
+and differ only by export rounding (largest difference 5 × 10⁻⁶).
 
 ## Certification
 
-Every case in this dataset passed four checks before it was included:
+Every case passed four checks before it was included:
 
-1. **Convergence:** all residuals settled below the prescribed threshold and showed no drift.
-2. **Mesh independence:** results were confirmed stable against a refined mesh.
-3. **Conservation:** mass and energy balances were verified across the domain.
-4. **Boundary conditions and physics:** `certify_case.py` reads the swept value from the file name, re-derives every boundary condition from it (wall swirl, free-surface ramp, temperatures) and checks the exported field against them. It also checks that the radial and swirl velocity vanish on the axis.
+1. Convergence: residuals below the set threshold with no drift.
+2. Mesh independence: results stable against a refined mesh.
+3. Conservation: mass and energy balance over the domain.
+4. Boundary conditions: `certify_case.py` reads the swept value from the file
+   name, works out every boundary condition from it (wall swirl, free-surface
+   ramp, temperatures) and checks the exported field against them. It also
+   checks that radial and swirl velocity are zero on the axis.
 
-Cases that did not pass all four checks were not included. To re-run check 4 on a sweep:
+To rerun check 4 on a sweep:
 
 ```
 cd CZ_Crystal_Sweep
 python certify_case.py *.csv
 ```
 
----
-
-## Repository Structure
+## Structure
 
 ```
 CZ_Crystal_Sweep/       11 cases + certify_case.py
@@ -59,7 +63,8 @@ CZ_Crucible_Sweep/      12 cases + certify_case.py
 CZ_TempChange_Sweep/    10 cases + certify_case.py
 ```
 
-Each sweep was first published in its own repository. Those repositories have the detailed notes: boundary-condition tables, the sweep results, certification margins and an archived release with a DOI.
+Each sweep was first published as its own repository, with boundary-condition
+tables, results, certification margins and an archived release with a DOI:
 
 | Sweep | Repository | DOI |
 |---|---|---|
@@ -67,26 +72,39 @@ Each sweep was first published in its own repository. Those repositories have th
 | Hot wall temperature | [CZ_Study_TempChange](https://github.com/bertwinshine/CZ_Study_TempChange) | [10.5281/zenodo.21955315](https://doi.org/10.5281/zenodo.21955315) |
 | Crucible rotation | [CZ_study_Crucible_Sweep](https://github.com/bertwinshine/CZ_study_Crucible_Sweep) | [10.5281/zenodo.21955323](https://doi.org/10.5281/zenodo.21955323) |
 
-The temperature repository also has three cases above 1785 K (1790, 1795 and 1800 K). There the melt becomes weakly unsteady, so those cases were run transient and exported as time-averaged fields. They are a different kind of data and are not part of this dataset.
+Not included here from the temperature repository:
 
----
+- 1750 K, which was run on an earlier mesh and doesn't stack with the others.
+- 1790, 1795 and 1800 K. The melt is weakly unsteady there, so those cases were
+  run transient and exported as time averages. They are a different kind of data.
 
-## Intended Use
+## Use
 
-This data is meant as training and validation input for surrogate models and PINNs. All 33 cases have the same nodes in the same order, so they can be stacked directly as a snapshot matrix for POD-based surrogates, or used as reference fields for PINN residual evaluation.
+All 33 cases share the same nodes in the same order, so they can be stacked
+directly as a POD snapshot matrix or used as reference fields for PINN
+residuals.
 
-If you use this dataset in your work, please cite the Huang et al. (2025) paper that the simulation setup is based on.
+If you use the data, please cite Huang et al. (2025), which the setup is based on.
 
----
+## Limitations
 
-## Notes and Limitations
+- ANSYS Student licence (mesh capped at about 512k cells). The 8181-node 2D mesh
+  was checked for mesh independence within that limit.
+- Laminar throughout. The Reynolds number of the melt flow is well below
+  transition for this geometry.
+- The free surface is a prescribed wall, not solved. No turbulence model,
+  radiation, Marangoni convection or magnetic field.
+- One geometry only (the Huang et al. baseline). No changes in crucible shape,
+  melt height or material properties.
+- Only one parameter moves at a time, so the data says nothing about how the
+  three interact.
+- The fixed anchor rotations were entered as 0.838 rad/s for the crystal
+  (8.0023 rpm) and −0.3140 rad/s for the crucible (−2.9985 rpm), 0.03 % and
+  0.05 % off nominal. All swept values are exact.
+- The certify scripts read the swept value from the file name. Keep the naming
+  pattern if you rename files.
 
-- Simulations were run under an ANSYS Student licence, which caps the mesh at about 512k cells. The mesh used (8181 nodes on the 2D axisymmetric domain) was confirmed mesh-independent within this limit.
-- The physics model is laminar throughout the steady range. The Reynolds number of the melt convection in these cases is well below transition for this geometry.
-- The free surface is imposed as a wall, not solved. No turbulence model, radiation, Marangoni convection or magnetic field.
-- The dataset covers one geometry (the Huang et al. baseline). It does not cover changes in crucible geometry, melt height or material properties.
-- Only one parameter moves at a time, so the data says nothing about how the three parameters interact.
-- Where the anchor rotation is held fixed, it was entered as 0.838 rad/s for the crystal (8.0023 rpm) and −0.3140 rad/s for the crucible (−2.9985 rpm), 0.03 % and 0.05 % from the nominal values. All swept values are exact.
-- The `certify_case.py` scripts read the swept parameter from the file name. If you rename case files, keep the naming pattern, or the checks will fail or give wrong results.
+## Credit
 
-The ANSYS modelling, the sweep design and the validation are mine. The Python was written with AI assistance. I understand what it does and can walk through it.
+The ANSYS setup, sweep design and validation are my work. I wrote the Python
+with help from an AI assistant and have checked and understand all of it.
