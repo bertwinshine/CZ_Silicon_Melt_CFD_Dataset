@@ -1,5 +1,7 @@
 # Czochralski silicon melt: CFD parameter sweep dataset
 
+> **Superseded by [CZ-Dataset-Doe](https://github.com/bertwinshine/CZ-Dataset-Doe)** (version 2: 265 cases over all three parameters, converged to 1e-6, with a mesh study and hold-out set). The cases here were stopped at 1e-3. Rerun to 1e-6, their velocity fields differ by typically 1 to 5 % (up to about 11 % for a few crucible cases), and the temperature cases at 1765 to 1785 K turn out not to be steady. This dataset stays online unchanged as version 1.
+
 33 steady CFD cases of a Czochralski (CZ) silicon melt from three parameter
 sweeps, collected in one place. I made them as reference data for surrogate
 models and physics-informed neural networks (PINNs) in the Quasi project
